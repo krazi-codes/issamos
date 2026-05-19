@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IssamOS - Interactive 3D Portfolio</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Issam's Interactive 3D Portfolio Website. Step into an interactive virtual operating system containing project collaborations, terminal logs, and interactive 3D WebGL scenes.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Space+Grotesk:wght@400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Style -->
+  <link rel="stylesheet" href="./src/style.css">
+
+  <!-- HTML Import Map for resolving Three.js bare imports in ES modules -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <!-- GSAP for smooth animations -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Background Three.js canvas for Space Starfield -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- CRT Monitor Overlay Effects -->
+  <div id="crt-overlay" class="crt-on"></div>
+  <div id="scanlines" class="crt-on"></div>
+
+  <!-- Main Virtual Desktop -->
+  <div id="desktop">
+    
+    <!-- Desktop Grid of Icons -->
+    <div class="desktop-icons">
+      <div class="desktop-icon" id="icon-profile" data-app="profile">
+        <div class="icon-wrapper">
+          <i data-lucide="user" class="icon-cyan"></i>
+        </div>
+        <span class="icon-label">profile.exe</span>
+      </div>
+
+      <div class="desktop-icon" id="icon-projects" data-app="projects">
+        <div class="icon-wrapper">
+          <i data-lucide="folder-git-2" class="icon-magenta"></i>
+        </div>
+        <span class="icon-label">collaborations</span>
+      </div>
+
+      <div class="desktop-icon" id="icon-terminal" data-app="terminal">
+        <div class="icon-wrapper">
+          <i data-lucide="terminal" class="icon-green"></i>
+        </div>
+        <span class="icon-label">terminal.exe</span>
+      </div>
+
+      <div class="desktop-icon" id="icon-viewer" data-app="viewer">
+        <div class="icon-wrapper">
+          <i data-lucide="box" class="icon-orange"></i>
+        </div>
+        <span class="icon-label">3d_sandbox.sys</span>
+      </div>
+    </div>
+
+    <!-- Window Manager Container (Draggable Windows will be managed here) -->
+    <div id="window-container"></div>
+
+  </div>
+
+  <!-- Bottom Taskbar/Dock -->
+  <div id="taskbar">
+    <div class="taskbar-left">
+      <button id="start-btn">
+        <i data-lucide="terminal" class="start-icon"></i>
+        <span>IssamOS</span>
+      </button>
+      <div id="running-apps">
+        <!-- Minimized/running window tabs will appear here -->
+      </div>
+    </div>
+    
+    <div class="taskbar-right">
+      <button id="crt-toggle" title="Toggle CRT Scanline Effect">
+        <i data-lucide="monitor"></i>
+        <span>CRT: ON</span>
+      </button>
+      <div id="system-clock">
+        <span id="time-display">12:00:00 PM</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Start Menu Dropup (Glassmorphic) -->
+  <div id="start-menu" class="hidden">
+    <div class="start-header">
+      <div class="avatar">I</div>
+      <div class="user-info">
+        <h3>Issam</h3>
+        <p>System Administrator</p>
+      </div>
+    </div>
+    <div class="start-items">
+      <div class="start-item" data-app="profile">
+        <i data-lucide="user"></i>
+        <span>About Developer</span>
+      </div>
+      <div class="start-item" data-app="projects">
+        <i data-lucide="folder-git-2"></i>
+        <span>My Collaborations</span>
+      </div>
+      <div class="start-item" data-app="terminal">
+        <i data-lucide="terminal"></i>
+        <span>Command Shell</span>
+      </div>
+      <div class="start-item" data-app="viewer">
+        <i data-lucide="box"></i>
+        <span>3D Sandbox</span>
+      </div>
+      <hr>
+      <div class="start-item" id="reboot-btn">
+        <i data-lucide="refresh-cw" class="icon-red"></i>
+        <span>System Reboot</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Window Templates (Invisible initially) -->
+  <template id="window-template">
+    <div class="window" id="" data-app="">
+      <!-- Window Titlebar -->
+      <div class="window-header">
+        <div class="window-title-area">
+          <i data-lucide="window-icon" class="window-title-icon"></i>
+          <span class="window-title">Application</span>
+        </div>
+        <div class="window-controls">
+          <button class="win-btn minimize-btn" title="Minimize"><i data-lucide="minus"></i></button>
+          <button class="win-btn maximize-btn" title="Maximize"><i data-lucide="square"></i></button>
+          <button class="win-btn close-btn" title="Close"><i data-lucide="x"></i></button>
+        </div>
+      </div>
+      
+      <!-- Window Content Area -->
+      <div class="window-content">
+        <!-- Content gets injected dynamically -->
+      </div>
+
+      <!-- Resize Handles -->
+      <div class="resize-handle resizer-r"></div>
+      <div class="resize-handle resizer-b"></div>
+      <div class="resize-handle resizer-rb"></div>
+    </div>
+  </template>
+
+  <!-- ES Modules Setup -->
+  <script type="module" src="./src/main.js"></script>
+
+</body>
+</html>
